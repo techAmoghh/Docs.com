@@ -31,11 +31,16 @@ export const getTasks = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("==== Incoming Update Task Request ====");
+    console.log("Task ID from URL:", id);
+    console.log("User ID from Token (req.user.id):", req.user.id);
+    console.log("Request Body:", req.body);
     const updatedTask = await Task.findOneAndUpdate(
       { _id: id, owner: req.user.id },
       req.body,
       { new: true }
     );
+    console.log("Updated Task: ", updatedTask);
     res.status(200).json(updatedTask);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -45,8 +50,23 @@ export const updateTask = async (req, res) => {
 // Delete a task
 export const deleteTask = async (req, res) => {
   try {
+    console.log("==== Incoming Delete Task Request ===="); // ➡️ Terminal tracking
+    console.log("Task ID from URL:", req.params.id);
+    console.log("User ID from Token (req.user.id):", req.user.id);
+
     const { id } = req.params;
-    await Task.findOneAndDelete({ _id: id, owner: req.user.id });
+
+    const deletedTask = await Task.findOneAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
+
+    if (!deletedTask) {
+      return res
+        .status(404)
+        .json({ message: "Task not found or unauthorized!" });
+    }
+
     res.status(200).json({ message: "Task deleted successfully!" });
   } catch (error) {
     res.status(500).json({ message: error.message });
