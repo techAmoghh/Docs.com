@@ -9,6 +9,7 @@ export const createTask = async (req, res) => {
       list,
       deadline,
       owner: req.user.id,
+      progress: calculateProgress(list), // 🛠️ Calculate initial progress!
     });
     await task.save();
     res.status(201).json(task);
@@ -35,6 +36,11 @@ export const updateTask = async (req, res) => {
     console.log("Task ID from URL:", id);
     console.log("User ID from Token (req.user.id):", req.user.id);
     console.log("Request Body:", req.body);
+
+    // If list is updated, recalculate progress
+    if (req.body.list) {
+      req.body.progress = calculateProgress(req.body.list);
+    }
     const updatedTask = await Task.findOneAndUpdate(
       { _id: id, owner: req.user.id },
       req.body,
@@ -71,4 +77,11 @@ export const deleteTask = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Helper to calculate progress percentage
+const calculateProgress = (list) => {
+  if (!list || list.length === 0) return 0;
+  const completedCount = list.filter((item) => item.completed).length;
+  return (completedCount / list.length) * 100;
 };
