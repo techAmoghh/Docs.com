@@ -1,10 +1,10 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
-import axiosClient from "../api/axiosClient";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-function Login({ onLoginSuccess }) {
+function Login() {
   const [form, setForm] = useState({ phone: "", password: "" });
   const navigate = useNavigate();
 
@@ -15,22 +15,21 @@ function Login({ onLoginSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axiosClient.post("/auth/login", form);
-      const token = res.data.token;
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        phone: form.phone,
+        password: form.password, // assuming backend expects 'password', not 'otp'
+      });
 
-      // Save token to localStorage
-      localStorage.setItem("token", token);
-
-      toast.success("Login successful! 🚀");
-
-      // 🔥 Trigger the update in App.jsx
-      onLoginSuccess();
-
-      // Redirect to homepage
-      navigate("/");
+      if (res.data && res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        toast.success("Login successful!");
+        navigate("/");
+      } else {
+        toast.error("Invalid login response");
+      }
     } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "Login failed");
+      console.error("Login error:", err);
+      toast.error("Login failed. Please check your phone or password.");
     }
   };
 

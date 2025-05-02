@@ -1,11 +1,14 @@
 // NavBar.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoMdAdd } from "react-icons/io";
 import { FaHome, FaUser, FaSearch, FaShoppingCart } from "react-icons/fa";
+import { logout } from "../utils/logout";
+import { HiOutlineLogout } from "react-icons/hi";
 
 const NavBar = () => {
+  const navigate = useNavigate();
   return (
     <StyledWrapper>
       <div className="button-container">
@@ -20,6 +23,9 @@ const NavBar = () => {
         </Link>
         <Link to="/login" className="button">
           <FaUser />
+        </Link>
+        <Link to="/login" className="button" onClick={() => logout(navigate)}>
+          <HiOutlineLogout size={20} />
         </Link>
       </div>
     </StyledWrapper>

@@ -1,6 +1,5 @@
 import React from "react";
-import Foreground from "./components/Foreground";
-import Background from "./components/background";
+import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -13,6 +12,7 @@ import CreateTask from "./pages/CreateTask";
 import NavBar from "./components/NavBar";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Custom wrapper to use hooks like useLocation outside <Router>
 const AppWrapper = () => {
@@ -30,15 +30,24 @@ const AppWrapper = () => {
         <Route
           path="/"
           element={
-            <div className="relative w-full h-screen bg-zinc-800">
-              <Background />
-              <Foreground />
-            </div>
+            <ProtectedRoute>
+              <div className="relative w-full h-screen bg-zinc-800">
+                <Home />
+              </div>
+            </ProtectedRoute>
           }
         />
+
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/create-task" element={<CreateTask />} />
+        <Route
+          path="/create-task"
+          element={
+            <ProtectedRoute>
+              <CreateTask />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
