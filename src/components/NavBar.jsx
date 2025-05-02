@@ -15,7 +15,7 @@ const NavBar = () => {
         <Link to="/create-task" className="button">
           <IoMdAdd size={24} />
         </Link>
-        <Link to="/" className="button">
+        <Link to="/home" className="button">
           <FaHome />
         </Link>
         <Link to="/search" className="button">

@@ -23,7 +23,7 @@ function Login() {
       if (res.data && res.data.token) {
         localStorage.setItem("token", res.data.token);
         toast.success("Login successful!");
-        navigate("/");
+        navigate("/home");
       } else {
         toast.error("Invalid login response");
       }

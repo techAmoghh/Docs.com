@@ -7,6 +7,7 @@ import {
   Routes,
   Route,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import CreateTask from "./pages/CreateTask";
 import NavBar from "./components/NavBar";
@@ -17,7 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Custom wrapper to use hooks like useLocation outside <Router>
 const AppWrapper = () => {
   const location = useLocation();
-  const showNavBar = ["/", "/create-task"].includes(location.pathname);
+  const showNavBar = ["/home", "/create-task"].includes(location.pathname);
 
   return (
     <>
@@ -28,7 +29,7 @@ const AppWrapper = () => {
 
       <Routes>
         <Route
-          path="/"
+          path="/home"
           element={
             <ProtectedRoute>
               <div className="relative w-full h-screen bg-zinc-800">
@@ -40,6 +41,7 @@ const AppWrapper = () => {
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route
           path="/create-task"
           element={
