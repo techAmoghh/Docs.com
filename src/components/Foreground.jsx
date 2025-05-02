@@ -7,6 +7,33 @@ function Foreground() {
   const data = [
     {
       desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
+      fileSize: "0.1mb",
+      close: false,
+      tag: {
+        isOpen: false,
+        tagTitle: "Download Now",
+      },
+    },
+    {
+      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
+      fileSize: "0.2mb",
+      close: true,
+      tag: {
+        isOpen: true,
+        tagTitle: "Download Now",
+      },
+    },
+    {
+      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
+      fileSize: "0.3mb",
+      close: true,
+      tag: {
+        isOpen: true,
+        tagTitle: "Download Now",
+      },
+    },
+    {
+      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
       fileSize: "0.4mb",
       close: false,
       tag: {
@@ -16,7 +43,7 @@ function Foreground() {
     },
     {
       desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.4mb",
+      fileSize: "0.5mb",
       close: true,
       tag: {
         isOpen: true,
@@ -25,35 +52,7 @@ function Foreground() {
     },
     {
       desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.4mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-        tagColor: "green",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.4mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.4mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.4mb",
+      fileSize: "0.6mb",
       close: true,
       tag: {
         isOpen: true,
@@ -75,7 +74,7 @@ function Foreground() {
               data={item}
               key={index}
               bgColor={changeColor}
-              refernce={ref}
+              reference={ref}
             />
           );
         })}

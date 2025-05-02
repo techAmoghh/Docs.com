@@ -4,12 +4,12 @@ import { MdOutlineFileDownload } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { motion } from "motion/react";
 
-function Card({ data, bgColor, refernce }) {
+function Card({ data, bgColor, reference }) {
   return (
     <>
       <motion.div
         drag
-        dragConstraints={refernce}
+        dragConstraints={reference}
         whileDrag={{ scale: 1.05 }}
         dragElastic={0.8}
         className="relative w-50 h-65 rounded-[35px] bg-zinc-900 text-white px-7 py-8 overflow-hidden flex-shrink-0 "
