@@ -1,32 +1,23 @@
+// src/App.jsx
 import React from "react";
 import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import CreateTask from "./pages/CreateTask";
 import NavBar from "./components/NavBar";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// Custom wrapper to use hooks like useLocation outside <Router>
+// Wrapper for conditional logic like NavBar visibility
 const AppWrapper = () => {
   const location = useLocation();
   const showNavBar = ["/home", "/create-task"].includes(location.pathname);
 
   return (
     <>
-      <ToastContainer />
-
-      {/* Conditionally render NavBar */}
       {showNavBar && <NavBar />}
-
       <Routes>
         <Route
           path="/home"
@@ -38,7 +29,6 @@ const AppWrapper = () => {
             </ProtectedRoute>
           }
         />
-
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" />} />
@@ -56,11 +46,7 @@ const AppWrapper = () => {
 };
 
 function App() {
-  return (
-    <Router>
-      <AppWrapper />
-    </Router>
-  );
+  return <AppWrapper />; // ✅ no <Router> here
 }
 
 export default App;

@@ -1,85 +1,59 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Card from "./Card";
+import { useAuth } from "../context/AuthContext";
 
 function Foreground() {
   const ref = useRef(null);
+  const { tasks, loading } = useAuth();
 
-  const data = [
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.1mb",
-      close: false,
-      tag: {
-        isOpen: false,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.2mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.3mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.4mb",
-      close: false,
-      tag: {
-        isOpen: false,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.5mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-      },
-    },
-    {
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque molestias repellendus nostrum corporis.",
-      fileSize: "0.6mb",
-      close: true,
-      tag: {
-        isOpen: true,
-        tagTitle: "Download Now",
-      },
-    },
-  ];
+  console.log("Foreground rendering with tasks:", tasks, "Loading:", loading);
+
+  // Show loading state only when loading is true and tasks is not yet loaded
+  if (loading && !Array.isArray(tasks)) {
+    console.log("Foreground: Loading tasks...");
+    return <p className="text-white text-xl">Loading tasks...</p>;
+  }
+
+  // If tasks is not an array (shouldn't happen with our fix, but good to be safe)
+  if (!Array.isArray(tasks)) {
+    console.error("Tasks is not an array:", tasks);
+    return <p className="text-white text-xl">Error loading tasks. Please try again.</p>;
+  }
+
+  console.log("✅ Tasks from context:", tasks);
 
   return (
-    <>
-      <div
-        ref={ref}
-        className="fixed w-full h-screen z-[3] flex gap-12 flex-wrap p-12"
-      >
-        {data.map((item, index) => {
+    <div
+      ref={ref}
+      className="fixed w-full h-screen z-[3] flex gap-12 flex-wrap p-12"
+    >
+      {tasks.length > 0 ? (
+        tasks.map((task, index) => {
+          console.log("Rendering task:", task);
+          if (!task) return null; // Skip any null/undefined tasks
+          
           const changeColor = index % 2 === 0 ? "bg-green-600" : "bg-blue-600";
           return (
             <Card
-              data={item}
-              key={index}
+              key={task._id || index}
+              data={{
+                desc: task.title || "No Title",
+                fileSize: task.fileSize || "N/A",
+                close: task.completed,
+                tag: {
+                  isOpen: true,
+                  tagTitle: task.priority || "Normal",
+                },
+              }}
               bgColor={changeColor}
               reference={ref}
             />
           );
-        })}
-      </div>
-    </>
+        })
+      ) : (
+        <p className="text-white text-xl">No tasks available. Create your first task to get started!</p>
+      )}
+    </div>
   );
 }
 

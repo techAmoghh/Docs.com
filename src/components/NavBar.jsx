@@ -18,12 +18,12 @@ const NavBar = () => {
         <Link to="/home" className="button">
           <FaHome />
         </Link>
-        <Link to="/search" className="button">
+        {/* <Link to="/search" className="button">
           <FaSearch />
-        </Link>
-        <Link to="/login" className="button">
+        </Link> */}
+        {/* <Link to="/login" className="button">
           <FaUser />
-        </Link>
+        </Link> */}
         <Link to="/login" className="button" onClick={() => logout(navigate)}>
           <HiOutlineLogout size={20} />
         </Link>
