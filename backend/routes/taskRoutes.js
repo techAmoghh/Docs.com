@@ -1,18 +1,28 @@
-import express from "express";
-import {
-  createTask,
-  getTasks,
-  updateTask,
-  deleteTask,
-} from "../controllers/taskController.js";
-import { protect } from "../middlewares/authMiddleware.js"; // JWT middleware (I’ll guide you for it too)
+import express from 'express';
+import { 
+  createTask, 
+  getTasks, 
+  updateTask, 
+  deleteTask, 
+  toggleSubtask 
+} from '../controllers/taskController.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// All routes are protected
-router.post("/", protect, createTask);
-router.get("/", protect, getTasks);
-router.put("/:id", protect, updateTask);
-router.delete("/:id", protect, deleteTask);
+// Apply authentication middleware to all routes
+router.use(protect);
+
+// Task routes
+router.route('/')
+  .post(createTask)
+  .get(getTasks);
+
+router.route('/:id')
+  .put(updateTask)
+  .delete(deleteTask);
+
+// Toggle subtask completion
+router.put('/:taskId/subtasks/:subtaskIndex/toggle', toggleSubtask);
 
 export default router;

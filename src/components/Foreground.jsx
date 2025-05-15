@@ -1,58 +1,85 @@
-import React, { useRef } from "react";
+import React, { useEffect } from "react";
+import { motion } from 'framer-motion';
 import Card from "./Card";
 import { useAuth } from "../context/AuthContext";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
+import axiosClient from "../api/axiosClient";
 
-function Foreground() {
-  const ref = useRef(null);
-  const { tasks, loading } = useAuth();
+function Foreground({ reference }) {
+  const { tasks, loading, fetchTasks } = useAuth();
 
-  console.log("Foreground rendering with tasks:", tasks, "Loading:", loading);
+  useEffect(() => {
+    // Only fetch tasks if we don't have any yet
+    if (tasks.length === 0) {
+      fetchTasks().catch(console.error);
+    }
+  }, [fetchTasks, tasks.length]);
 
-  // Show loading state only when loading is true and tasks is not yet loaded
-  if (loading && !Array.isArray(tasks)) {
-    console.log("Foreground: Loading tasks...");
-    return <p className="text-white text-xl">Loading tasks...</p>;
+  if (loading && tasks.length === 0) {
+    return (
+      <div className="w-full flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
-  // If tasks is not an array (shouldn't happen with our fix, but good to be safe)
   if (!Array.isArray(tasks)) {
-    console.error("Tasks is not an array:", tasks);
-    return <p className="text-white text-xl">Error loading tasks. Please try again.</p>;
+    return (
+      <div className="w-full text-center py-10">
+        <p className="text-zinc-400 text-lg">Error loading tasks. Please try again.</p>
+      </div>
+    );
   }
 
-  console.log("✅ Tasks from context:", tasks);
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axiosClient.delete(`/tasks/${taskId}`);
+      toast.success('Task deleted successfully');
+      await fetchTasks();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete task');
+    }
+  };
 
   return (
-    <div
-      ref={ref}
-      className="fixed w-full h-screen z-[3] flex gap-12 flex-wrap p-12"
-    >
-      {tasks.length > 0 ? (
-        tasks.map((task, index) => {
-          console.log("Rendering task:", task);
-          if (!task) return null; // Skip any null/undefined tasks
-          
-          const changeColor = index % 2 === 0 ? "bg-green-600" : "bg-blue-600";
-          return (
-            <Card
-              key={task._id || index}
-              data={{
-                desc: task.title || "No Title",
-                fileSize: task.fileSize || "N/A",
-                close: task.completed,
-                tag: {
-                  isOpen: true,
-                  tagTitle: task.priority || "Normal",
-                },
-              }}
-              bgColor={changeColor}
-              reference={ref}
-            />
-          );
-        })
-      ) : (
-        <p className="text-white text-xl">No tasks available. Create your first task to get started!</p>
-      )}
+    <div className="w-full min-h-screen overflow-hidden">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {tasks.length > 0 ? (
+            tasks.map((task, index) => (
+              <motion.div
+                key={task._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                drag
+                dragConstraints={reference}
+                dragElastic={0.1}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="cursor-grab active:cursor-grabbing w-full h-full"
+                style={{ position: 'relative' }}
+              >
+                <Card
+                  data={{
+                    ...task,
+                    title: task.title || "Untitled Task",
+                    subtasks: task.subtasks || [],
+                    dueDate: task.dueDate || null,
+                  }}
+                  onDelete={() => handleDeleteTask(task._id)}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-20">
+              <p className="text-zinc-400 text-lg">No tasks found. Create your first task to get started!</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

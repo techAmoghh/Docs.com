@@ -19,34 +19,35 @@ const AppWrapper = () => {
     <>
       {showNavBar && <NavBar />}
       <Routes>
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <div className="relative w-full h-screen bg-zinc-800">
-                <Home />
-              </div>
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route
-          path="/create-task"
-          element={
-            <ProtectedRoute>
-              <CreateTask />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/create-task" element={<CreateTask />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </>
   );
 };
 
 function App() {
-  return <AppWrapper />; // ✅ no <Router> here
+  return (
+    <div className="min-h-screen bg-zinc-900 text-white">
+      <AppWrapper />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+    </div>
+  );
 }
 
 export default App;

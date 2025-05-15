@@ -5,20 +5,35 @@ const taskSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      trim: true
     },
-    list: [
-      {
-        text: { type: String },
-        completed: { type: Boolean, default: false },
+    description: {
+      type: String,
+      trim: true
+    },
+    subtasks: [{
+      title: {
+        type: String,
+        required: true,
+        trim: true
       },
-    ],
-    deadline: {
+      completed: {
+        type: Boolean,
+        default: false
+      }
+    }],
+    dueDate: {
       type: Date,
-      required: true,
+      required: true
     },
-    progress: {
-      type: Number,
-      default: 0, // we'll calculate later
+    priority: {
+      type: String,
+      enum: ['Low', 'Medium', 'High'],
+      default: 'Medium'
+    },
+    completed: {
+      type: Boolean,
+      default: false
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -26,8 +41,28 @@ const taskSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
 );
+
+// Calculate progress based on completed subtasks
+taskSchema.virtual('progress').get(function() {
+  if (this.subtasks.length === 0) return 0;
+  const completed = this.subtasks.filter(subtask => subtask.completed).length;
+  return Math.round((completed / this.subtasks.length) * 100);
+});
+
+// Update completed status if all subtasks are done
+taskSchema.pre('save', function(next) {
+  if (this.isModified('subtasks')) {
+    this.completed = this.subtasks.length > 0 && 
+                    this.subtasks.every(subtask => subtask.completed);
+  }
+  next();
+});
 
 const Task = mongoose.model("Task", taskSchema);
 
