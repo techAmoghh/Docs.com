@@ -3,8 +3,20 @@ import { FaFileAlt, FaTrash, FaCheck, FaRegCircle } from "react-icons/fa";
 import { formatDistanceToNow, parseISO, isPast, isToday } from 'date-fns';
 
 function Card({ data, onDelete }) {
-  const colors = ['bg-blue-600', 'bg-green-600', 'bg-pink-600'];
-  const [cardColor, setCardColor] = useState(colors[Math.floor(Math.random() * colors.length)]);
+  const getColorForPriority = (priority) => {
+    switch (priority) {
+      case "High":
+        return "bg-red-600";
+      case "Medium":
+        return "bg-blue-600";
+      case "Low":
+        return "bg-green-600";
+      default:
+        return "bg-blue-600";
+    }
+  };
+
+  const cardColor = getColorForPriority(data.priority || "Medium");
   const [isCompleted, setIsCompleted] = useState(false);
   const [subtasks, setSubtasks] = useState(data.subtasks || []);
 
@@ -80,7 +92,7 @@ function Card({ data, onDelete }) {
                     onChange={() => handleSubtaskToggle(index)}
                     className="rounded text-blue-500"
                   />
-                  <span className={`text-sm ${subtask.completed ? 'line-through text-gray-400' : ''}`}>
+                  <span className={`${subtask.completed ? 'line-through text-gray-400' : ''}`}>
                     {subtask.title}
                   </span>
                 </label>
@@ -92,35 +104,37 @@ function Card({ data, onDelete }) {
 
       {/* Footer - Fixed at bottom */}
       <div className="mt-auto pt-3">
-        {/* Due Date */}
-        {data.dueDate && (
-          <div className="flex items-center text-sm text-gray-400 mb-3">
-            <span className="mr-2">⏰</span>
-            <div>
-              <p className="text-sm">
-                {new Date(data.dueDate).toLocaleString(undefined, {
-                  dateStyle: 'medium',
-                  timeStyle: 'short'
-                })}
-              </p>
-              <p className="text-xs text-gray-500">
-                {formatDistanceToNow(new Date(data.dueDate), { addSuffix: true })}
-              </p>
+        <div className="flex justify-between items-center">
+          {/* Due Date */}
+          {data.dueDate && (
+            <div className="flex items-center text-sm text-gray-400">
+              <span className="mr-2">⏰</span>
+              <div>
+                <p className="text-sm">
+                  {new Date(data.dueDate).toLocaleString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+                {dueDate?.isOverdue && (
+                  <span className="text-red-500"> overdue</span>
+                )}
+                {dueDate?.isDueToday && (
+                  <span className="text-yellow-400"> due today</span>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Delete Button */}
-        <div className="flex justify-end pt-2 border-t border-zinc-700">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete?.();
-            }}
-            className="text-gray-400 hover:text-red-400 transition-colors p-1"
-            aria-label="Delete task"
+          {/* Delete Button */}
+          <button
+            onClick={onDelete}
+            className="text-red-500 hover:text-red-400"
           >
-            <FaTrash className="w-4 h-4" />
+            <FaTrash size={20} />
           </button>
         </div>
       </div>
