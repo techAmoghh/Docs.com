@@ -3,7 +3,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoMdAdd } from "react-icons/io";
-import { FaHome, FaUser, FaSearch, FaShoppingCart } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { logout } from "../utils/logout";
 import { HiOutlineLogout } from "react-icons/hi";
 
